@@ -19,7 +19,8 @@ async function asyncCall(i){
 window.addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i != 8; i++){
         percents[i].innerHTML = "Loading..."
-        asyncCall(i + 1)
+        asyncCall(3)
+        // asyncCall(i)
         break
     }
 })

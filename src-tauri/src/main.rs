@@ -3,7 +3,6 @@
 
 
 use serde_json::Value;
-use std::fmt::format;
 use std::fs;
 use std::collections::HashMap;
 
@@ -15,7 +14,12 @@ use std::collections::HashMap;
 // temp_String: stores the progress so far for collapse
 
 
-fn recursive_iteration_of_string(slice_size: i8, holder_string: String, current_position: usize, mut compiled_Values: HashMap<String, i16>, temp_string: String) -> HashMap<String, i16>{
+fn recursive_iteration_of_string(
+  slice_size: i8, 
+  holder_string: String, 
+  current_position: usize,
+   mut compiled_Values: HashMap<String, i16>, 
+   mut temp_string: Vec<u16>) -> HashMap<String, i16>{
   
   // pass the compiled values around the depths
   // if no value to pass around create a new one
@@ -28,30 +32,50 @@ fn recursive_iteration_of_string(slice_size: i8, holder_string: String, current_
       let binding = holder_string.replace('"', "");
       let iterable_string: Vec<_> = binding.split(" ").collect();
 
-      let mut split_temp = temp_string.split(" ");
-      let split_count: usize = split_temp.count() + 1;
+  
+      temp_string = temp_string.clone();
 
-      
+      let mut split_count: usize = 0;
 
+      for value in temp_string.iter(){
+        if value != &9999{
+          // println!("{}", *value);
+          split_count += 1;
+        }
+      }
 
 
 
       for x in current_position..7 {
+
+
         // if we have reached the target threshold for the length of our search begin compiling the values
         if split_count as i8 == slice_size{
+          let mut key: String = "".to_string();
+          temp_string[current_position + 1] = iterable_string[x].parse::<u16>().unwrap();
 
-          // before adding the value sort the numbers from smallest to largest. split temp using .next commands
-          compiled_Values.entry(format!("{} {}", holder_string, iterable_string[x])).and_modify(|count| *count += 1).or_insert(1);
+          // before adding the value sort the numbers from smallest to largest.
+          let mut q: Vec<u16> = temp_string.clone();
+          q.sort();
+          q.iter().for_each(|num: &u16| key = format!("{} {}", key, num.to_string()));
+
+          println!("{} OASS", key);
+          compiled_Values.entry(key).and_modify(|count| *count += 1).or_insert(1);
+
         } else {
+
+          temp_string[current_position] = iterable_string[x].parse::<u16>().unwrap();
           // add the new number to the holder and parse that value
 
-
+          recursive_iteration_of_string(slice_size, (*holder_string).to_string(), 
+          x + 1, 
+          compiled_Values.clone(), (*temp_string).to_vec());
           // extract value from returned function and check if its already in the system.
           // if does not already exist create new element
         }
       }
-    
-      return compiled_Values;
+      let temp_hash: HashMap<String, i16> = HashMap::new();
+      return temp_hash;
 
 
 
@@ -79,7 +103,8 @@ fn calculateAverage(indexcount: i8) -> Result<[&'static str; 2], String>{
 
         let temp_hash: HashMap<String, i16> = HashMap::new();
 
-        recursive_iteration_of_string(indexcount, numbers.to_vec()[i].to_string(), 0, temp_hash, "".to_string());
+        let temp_hash: HashMap<String, i16> = HashMap::new();
+        println!("{:?}", recursive_iteration_of_string(indexcount, numbers.to_vec()[i].to_string(), 0, temp_hash, vec![9999; 8]));
 
         // iter through each object in return and find highest value object
         // take the value of maximum value divided by the sum of all object values * 100%
