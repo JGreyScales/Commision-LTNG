@@ -1,3 +1,3 @@
 target/
-Winners.json
+*.json
 *.py

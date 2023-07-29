@@ -5,23 +5,22 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 let percents = document.getElementsByClassName("percents")[0].children
 
 async function queryAverage(i){
-    await invoke ('calculateAverage', {indexcount:i}).then( returnValue => {
-        percents[i - 1].innerHTML =  returnValue[0] + "%<br>" + returnValue[1]
-    })
+    return await invoke ('calculateAverage', {indexcount:i})
 }
 
 async function asyncCall(i){
     await delay(1);
-    await queryAverage(i)
+    return await queryAverage(i)
 }
 
 
 window.addEventListener("DOMContentLoaded", () => {
-    for (let i = 0; i != 8; i++){
-        percents[i].innerHTML = "Loading..."
-        asyncCall(3)
-        // asyncCall(i)
-        break
+    for (let i = 1; i != 9; i++){
+        percents[i - 1].innerHTML = "Loading..."
+        console.log(percents[7].innerHTML)
+        asyncCall(i).then( returnValue => {
+            percents[i - 1].innerHTML =  returnValue[0] + "%<br>" + returnValue[1]
+        })
     }
 })
 

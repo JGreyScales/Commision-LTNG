@@ -3,8 +3,10 @@
 
 
 use serde_json::Value;
+use std::fmt::format;
 use std::fs;
 use std::collections::HashMap;
+
 
 
 // slice_size: Determines the maximum numbers allowed to compare
@@ -20,6 +22,7 @@ fn recursive_iteration_of_string(
   current_position: usize,
    mut compiled_Values: HashMap<String, i16>, 
    mut temp_string: Vec<u16>) -> HashMap<String, i16>{
+
   
   // pass the compiled values around the depths
   // if no value to pass around create a new one
@@ -36,17 +39,15 @@ fn recursive_iteration_of_string(
       temp_string = temp_string.clone();
 
       let mut split_count: usize = 0;
-
       for value in temp_string.iter(){
         if value != &9999{
-          // println!("{}", *value);
           split_count += 1;
         }
       }
 
 
 
-      for x in current_position..7 {
+      for x in current_position..8 {
 
 
         // if we have reached the target threshold for the length of our search begin compiling the values
@@ -57,25 +58,31 @@ fn recursive_iteration_of_string(
           // before adding the value sort the numbers from smallest to largest.
           let mut q: Vec<u16> = temp_string.clone();
           q.sort();
+          q.retain(|value| *value != 9999);
           q.iter().for_each(|num: &u16| key = format!("{} {}", key, num.to_string()));
 
-          println!("{} OASS", key);
-          compiled_Values.entry(key).and_modify(|count| *count += 1).or_insert(1);
+          compiled_Values.entry(key).or_insert(1);
 
-        } else {
+        } 
+        else {
 
           temp_string[current_position] = iterable_string[x].parse::<u16>().unwrap();
           // add the new number to the holder and parse that value
-
-          recursive_iteration_of_string(slice_size, (*holder_string).to_string(), 
+          let returned_values: HashMap<String, i16> = recursive_iteration_of_string(slice_size, (*holder_string).to_string(), 
           x + 1, 
           compiled_Values.clone(), (*temp_string).to_vec());
           // extract value from returned function and check if its already in the system.
           // if does not already exist create new element
+
+          returned_values.iter();
+
+          for returned_value in returned_values{
+            compiled_Values.entry(returned_value.0).or_insert(1);
+          }
         }
       }
-      let temp_hash: HashMap<String, i16> = HashMap::new();
-      return temp_hash;
+
+      return compiled_Values;
 
 
 
@@ -83,14 +90,15 @@ fn recursive_iteration_of_string(
 
 // main function that caculates the averages
 #[tauri::command]
-fn calculateAverage(indexcount: i8) -> Result<[&'static str; 2], String>{
+fn calculateAverage(indexcount: i8) -> Result<(f64, String), String>{
 
   // basic definement
-  let mut compiled_values: [&str; 2] = [""; 2];
+  let mut compiled_values: (f64, String) = (0.0, "".to_string());
 
   let contents: String = fs::read_to_string("ui\\Assets\\Winners.json").unwrap();
   let json_values: Value = serde_json::from_str(&contents).unwrap();
 
+  let mut temp_hash: HashMap<String, i16> = HashMap::new();
 
   // I have no idea; but it works and I don't want to refigure it out
   for (mut i, numbers) in json_values["Winners"].as_array().iter().enumerate(){
@@ -101,43 +109,35 @@ fn calculateAverage(indexcount: i8) -> Result<[&'static str; 2], String>{
         break;
       } else {
 
-        let temp_hash: HashMap<String, i16> = HashMap::new();
-
-        let temp_hash: HashMap<String, i16> = HashMap::new();
-        println!("{:?}", recursive_iteration_of_string(indexcount, numbers.to_vec()[i].to_string(), 0, temp_hash, vec![9999; 8]));
-
-        // iter through each object in return and find highest value object
-        // take the value of maximum value divided by the sum of all object values * 100%
-
-
-        // iterate over split string
-        // for (mut x, number) in numbers.to_vec()[i].to_string().replace('"', "").split(" ").enumerate() {
+        {
+          let burner_hash: HashMap<String, i16> = HashMap::new();
+          for (key, value) in recursive_iteration_of_string(indexcount - 1, numbers.to_vec()[i].to_string(), 0, burner_hash, vec![9999; 9]){
+            temp_hash.entry(key).and_modify(|mut value| *value += 1).or_insert(1);
+          };
+        }
 
 
-
-
-        //   if x as i8 == indexcount{
-            
-        //     // simple try catch logic to logically update the hashmap values
-        //     final_values.entry(temp_string).and_modify(|count| *count += 1).or_insert(1);
-
-        //     break;
-        //   } else {
-        //     // string compulation based on index parameters
-        //     // optimization improvements will be made for index = 8 scenerios
-        //     temp_string = format!("{} {}", temp_string, number);
-        //   }
-        //   x += 1;
-        // }
         i += 1;
       }
-
     }
   }
 
-  compiled_values[0] = "27";
-  compiled_values[1] = "52 60 20 52";
-  println!("finished");
+  let mut current_key: (String, i16) = ("".to_string(), 0);
+  let mut ticker: u16 = 0;
+  println!("{:?}", temp_hash);
+  for (key, value) in temp_hash.clone(){
+    if value > current_key.1{
+      current_key = (key, value);
+    }
+    ticker += 1;
+  }
+
+  // Round to x.xxx
+  let percent: f64 = format!("{:.1$}", current_key.1 as f64 / ticker as f64 * 100.0, 3).parse::<f64>().unwrap();
+  println!("{} | {}", current_key.0, current_key.1);
+  compiled_values.0 = percent;
+  compiled_values.1 = current_key.0;
+  println!("finished: index {}", indexcount);
   Ok(compiled_values)
 }
 
