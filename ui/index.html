@@ -8,17 +8,19 @@
   </head>
   <body>
     <div class="interactionarea">
-      <h1 id="title">Lottery Averager</h1>
-      <div>
-        <input type="text" class="Grand" size="1px">
-        <input type="text" class="number" size="1px">
-        <input type="text" class="number" size="1px">
-        <input type="text" class="number" size="1px">
-        <input type="text" class="number" size="1px">
-        <input type="text" class="number" size="1px">
-        <input type="text" class="number" size="1px">
-        <input type="submit">
-      </div>
+      <h1 id="title">Lottery Average</h1>
+      <div class="cssHolder">
+        <div class="SubmitForm">
+          <input type="text" class="number" size="1px" id="true">
+          <input type="text" class="number" size="1px" id="true">
+          <input type="text" class="number" size="1px" id="true">
+          <input type="text" class="number" size="1px" id="true">
+          <input type="text" class="number" size="1px" id="true">
+          <input type="text" class="number" size="1px" id="true">
+          <input type="text" class="number" size="1px" id="true">
+          <input type="text" class="number" size="1px" id="true">
+          <button type="submit" onclick="updateJSON()" id="false">Submit</button>
+        </div>
       <div class="percents">
         <div class="averagepercent" id="grand">
           xx%<br>
@@ -53,10 +55,8 @@
           xx xx xx xx xx xx xx 
         </div class="averagepercent">
       </div>
-
     </div>
   </body>
-
-
+  <button class="exit" onclick="exit()">Exit</button>
   <script src="index.js"></script>
 </html>

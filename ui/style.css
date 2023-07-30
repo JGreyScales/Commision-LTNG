@@ -18,6 +18,27 @@ html {
     align-items: center;
     gap: 20px;
 
+
+
+}
+
+#title{
+    color: white;
+    background-color: rgba(74, 120, 164, 0.1);
+}
+.cssHolder{
+    border-radius: 15px;
+    border-color: grey;
+    border-style:solid;
+    border-width: 1;
+
+    backdrop-filter: blur(20px);
+}
+
+.SubmitForm{
+    align-items: center;
+    transform: translate(10%, 10%);
+    margin-bottom: 20px;
 }
 
 .averagepercent {
@@ -42,4 +63,9 @@ html {
     border-color: gold;
     background: rgba(157, 184, 37, 0.9);
 
+}
+
+.exit{
+    position: absolute;
+    right:0%;
 }
