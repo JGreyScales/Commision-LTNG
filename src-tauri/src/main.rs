@@ -3,7 +3,6 @@
 
 
 use serde_json::Value;
-use std::fmt::format;
 use std::fs;
 use std::collections::HashMap;
 
@@ -124,7 +123,6 @@ fn calculateAverage(indexcount: i8) -> Result<(f64, String), String>{
 
   let mut current_key: (String, i16) = ("".to_string(), 0);
   let mut ticker: u16 = 0;
-  println!("{:?}", temp_hash);
   for (key, value) in temp_hash.clone(){
     if value > current_key.1{
       current_key = (key, value);
@@ -140,7 +138,6 @@ fn calculateAverage(indexcount: i8) -> Result<(f64, String), String>{
   println!("finished: index {}", indexcount);
   Ok(compiled_values)
 }
-
 
 fn main() {
   tauri::Builder::default()

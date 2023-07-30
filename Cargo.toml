@@ -4,6 +4,7 @@ overflow-checks = false
 
 [profile.release]
 opt-level = 3
+overflow-checks = true
 
 [workspace]
 resolver = "2"
