@@ -2,7 +2,7 @@
 name = "Main.RS"
 version = "1.0.0"
 description = "Lottery average"
-authors = ["you"]
+authors = ["GreyScales"]
 license = ""
 repository = ""
 default-run = "app"
